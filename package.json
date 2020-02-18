@@ -6,7 +6,7 @@
   "author": "gosho-kazuya <ketsume0211@gmail.com>",
   "license": "MIT",
   "bin": {
-    "rnbv": "./bin/cli.js"
+    "rnbv": "./bin/rnbv.js"
   },
   "dependencies": {
     "chalk": "^3.0.0",
@@ -17,5 +17,15 @@
     "husky": "^4.2.3",
     "lint-staged": "^10.0.7",
     "prettier": "^1.19.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,md}": [
+      "prettier --write"
+    ]
   }
 }
