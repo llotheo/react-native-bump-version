@@ -5,8 +5,10 @@ const chalk = require('chalk')
 const prompts = require('prompts')
 const semver = require('semver')
 
-const configMap = new Map()
-const configKeys = ['androidPath', 'iosPath']
+const configMap = new Map([
+  ['androidPath', './android/app/build.gradle'],
+  ['iosPath', './ios/MyApp/Info.plist'],
+])
 
 const ANDROID_REGEX = /versionName "([.|\d]+)"/
 const IOS_REGEX = /\s\<key\>CFBundleShortVersionString\<\/key\>\n\s+\<string\>(.+)\<\/string\>/m
@@ -52,8 +54,15 @@ function ios(releaseType) {
 }
 
 function run() {
-  const config = require(`${process.cwd()}/rnbv.config.js`)
-  configKeys.forEach(key => configMap.set(key, config[key]))
+  const configFilePath = `${process.cwd()}/rnbv.config.js`
+  if (fs.existsSync(configFilePath)) {
+    const config = require(`${process.cwd()}/rnbv.config.js`)
+    for (key of configMap.keys()) {
+      if (config[key]) {
+        configMap.set(key, config[key])
+      }
+    }
+  }
 
   prompts({
     type: 'select',
