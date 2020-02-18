@@ -1,0 +1,81 @@
+#!/usr/bin/env node
+
+const fs = require('fs')
+const chalk = require('chalk')
+const prompts = require('prompts')
+const semver = require('semver')
+
+const configMap = new Map()
+const configKeys = ['androidPath', 'iosPath']
+
+const ANDROID_REGEX = /versionName "([.|\d]+)"/
+const IOS_REGEX = /\s\<key\>CFBundleShortVersionString\<\/key\>\n\s+\<string\>(.+)\<\/string\>/m
+
+function checkSemver(maybeSemver) {
+  if (!semver.valid(maybeSemver)) {
+    throw new Error(`Current version string is not semver: ${maybeSemver}`)
+  }
+}
+
+function getAndroidVersion() {
+  const file = fs.readFileSync(configMap.get('androidPath'), 'utf8')
+  const [_, current] = file.match(ANDROID_REGEX)
+  checkSemver(current)
+  return current
+}
+
+function getIOSVersion() {
+  const file = fs.readFileSync(configMap.get('iosPath'), 'utf8')
+  const [_, current] = file.match(IOS_REGEX)
+  checkSemver(current)
+  return current
+}
+
+function android(releaseType) {
+  const current = getAndroidVersion()
+  const file = fs.readFileSync(configMap.get('androidPath'), 'utf8')
+  const next = semver.inc(current, releaseType)
+  const updated = file.replace(ANDROID_REGEX, `versionName "${next}"`)
+  fs.writeFileSync(configMap.get('androidPath'), updated, 'utf8')
+
+  console.log(chalk.green(`Android SUCCESS! ${current} -> ${next}`))
+}
+
+function ios(releaseType) {
+  const current = getIOSVersion()
+  const file = fs.readFileSync(configMap.get('iosPath'), 'utf8')
+  const next = semver.inc(current, releaseType)
+  const updated = file.replace(`<string>${current}</string>`, `<string>${next}</string>`)
+  fs.writeFileSync(configMap.get('iosPath'), updated, 'utf8')
+
+  console.log(chalk.green(`iOS SUCCESS! ${current} -> ${next}`))
+}
+
+function run() {
+  const config = require(`${process.cwd()}/rnbv.config.js`)
+  configKeys.forEach(key => configMap.set(key, config[key]))
+
+  prompts({
+    type: 'select',
+    name: 'releaseType',
+    message: `Which version is the next release? (current is ${getIOSVersion()})`,
+    choices: [
+      { title: 'Major', value: 'major' },
+      { title: 'Minor', value: 'minor' },
+      { title: 'Patch', value: 'patch' },
+    ],
+    initial: 0,
+  }).then(({ releaseType }) => {
+    if (!releaseType) {
+      return
+    }
+    android(releaseType)
+    ios(releaseType)
+  })
+}
+
+module.exports = {
+  run,
+  getAndroidVersion,
+  getIOSVersion,
+}
