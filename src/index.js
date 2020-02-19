@@ -54,16 +54,10 @@ function ios(releaseType) {
 }
 
 function run() {
-  const configFilePath = `${process.cwd()}/rnbv.config.js`
-  if (fs.existsSync(configFilePath)) {
-    const config = require(`${process.cwd()}/rnbv.config.js`)
-    for (key of configMap.keys()) {
-      if (config[key]) {
-        configMap.set(key, config[key])
-      }
-    }
+  configure()
+  if (!validate()) {
+    process.exit(1)
   }
-
   prompts({
     type: 'select',
     name: 'releaseType',
@@ -76,15 +70,39 @@ function run() {
     initial: 0,
   }).then(({ releaseType }) => {
     if (!releaseType) {
-      return
+      process.exit(2)
     }
     android(releaseType)
     ios(releaseType)
   })
 }
 
+function validate() {
+  if (!fs.existsSync(configMap.get('androidPath'))) {
+    console.log(chalk.red(`Error: androidPath ${configMap.get('androidPath')} does not exist`))
+    return false
+  }
+  if (!fs.existsSync(configMap.get('iosPath'))) {
+    console.log(chalk.red(`Error: androidPath ${configMap.get('androidPath')} does not exist`))
+    return false
+  }
+  return true
+}
+
+function configure(configFilePath = `${process.cwd()}/rnbv.config.js`) {
+  if (fs.existsSync(configFilePath)) {
+    const config = require(`${process.cwd()}/rnbv.config.js`)
+    for (key of configMap.keys()) {
+      if (config[key]) {
+        configMap.set(key, config[key])
+      }
+    }
+  }
+}
+
 module.exports = {
   run,
+  configure,
   getAndroidVersion,
   getIOSVersion,
 }

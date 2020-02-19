@@ -1,8 +1,10 @@
-![image](./demo.gif)
+[![npm version](https://badge.fury.io/js/react-native-bump-version.svg)](https://badge.fury.io/js/react-native-bump-version)
 
 # react-native-bump-version (rnbv)
 
 Bump version in both Android / iOS project
+
+![image](./demo.gif)
 
 # Install
 
@@ -18,7 +20,17 @@ yarn add -D rnbv
 
 # Usage
 
+**CLI Usage**
+
 Run `rnbv` and answer prompts.
+
+**Script Usage**
+
+```javascript
+const { getAndroidVersion, getIOSVersion } = require('rnbv')
+
+getAndroidVersion() // => e.g.) 1.0.2
+```
 
 # Configuration
 
