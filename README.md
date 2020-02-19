@@ -1,4 +1,4 @@
-[![npm version](https://badge.fury.io/js/react-native-bump-version.svg)](https://badge.fury.io/js/react-native-bump-version)
+[![npm version](https://badge.fury.io/js/rnbv.svg)](https://badge.fury.io/js/rnbv)
 
 # react-native-bump-version (rnbv)
 
