@@ -83,7 +83,7 @@ function validate() {
     return false
   }
   if (!fs.existsSync(configMap.get('iosPath'))) {
-    console.log(chalk.red(`Error: androidPath ${configMap.get('androidPath')} does not exist`))
+    console.log(chalk.red(`Error: iosPath ${configMap.get('iosPath')} does not exist`))
     return false
   }
   return true
