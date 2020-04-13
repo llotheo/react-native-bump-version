@@ -11,7 +11,7 @@
   "dependencies": {
     "chalk": "^3.0.0",
     "prompts": "^2.3.2",
-    "semver": "^7.1.3"
+    "semver": "^7.2.2"
   },
   "devDependencies": {
     "husky": "^4.2.3",
