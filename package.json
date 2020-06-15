@@ -9,7 +9,7 @@
     "rnbv": "./bin/rnbv.js"
   },
   "dependencies": {
-    "chalk": "^3.0.0",
+    "chalk": "^4.1.0",
     "prompts": "^2.3.2",
     "semver": "^7.3.2"
   },
